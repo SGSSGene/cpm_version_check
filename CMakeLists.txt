@@ -6,14 +6,18 @@ cmake_minimum_required (VERSION 3.14)
 set(CPM_CHECK_VERSION_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "CPM_CHECK_VERSION_PATH")
 function(cpm_check_version)
     set(ignore_packages ${ARGN})
+    message("ignoring packages:  ${ignore_packages}")
 
     option(CPM_CHECK_VERSION_ENABLED "Enables CPM_CHECK_VERSION as target for test." OFF)
     if (CPM_CHECK_VERSION_ENABLED)
         add_custom_target(CPM_CHECK_NEWER_PACKAGES)
         foreach(package ${CPM_PACKAGES})
+            message("Is ${package} in ${ignore_packages}?")
             if ("${package}" IN_LIST ignore_packages)
+                message("yes")
                 continue()
             endif()
+            message("no")
             add_custom_target(CPM_CHECK_NEWER_PACKAGES_${package}
                 COMMAND ${CPM_CHECK_VERSION_PATH}/isNewestVersion.sh
                               ${package}
